@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "compilerOptions": {
+    "module": "ES2020",
+    "rootDir": "/",
+    "outDir": "./lib"
+  },
+  "include": ["./src/client", "./src/shared", "src/node/utils/getSidebarData.js"]
+}
