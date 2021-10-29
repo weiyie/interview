@@ -1,10 +1,10 @@
-const fs = require('fs') // 文件模块
-const path = require('path') // 路径模块
-const chalk = require('chalk') // 命令行打印美化
-const matter = require('gray-matter') // front matter解析器
-const log = console.log
+const fs = require('fs'); // 文件模块
+const path = require('path'); // 路径模块
+const chalk = require('chalk'); // 命令行打印美化
+const matter = require('gray-matter'); // front matter解析器
+const log = console.log;
 
-let catalogueData = {} // 目录页数据
+let catalogueData = {}; // 目录页数据
 
 /**
  * 生成侧边栏数据
@@ -12,8 +12,8 @@ let catalogueData = {} // 目录页数据
  * @param {Boolean} collapsable  是否可折叠
  */
 function createSidebarData(sourceDir, collapsable = false) {
-  const sidebarData = {}
-  const tocs = readTocs(sourceDir)
+  const sidebarData = {};
+  const tocs = readTocs(sourceDir);
   tocs.forEach((toc) => {
     // toc是每个目录的绝对路径
 
@@ -23,49 +23,49 @@ function createSidebarData(sourceDir, collapsable = false) {
       // const sidebarArr = mapTocToPostSidebar(toc);
       // sidebarData[`/${path.basename(toc)}/`] = sidebarArr
     } else {
-      const sidebarObj = mapTocToSidebar(toc, collapsable)
+      const sidebarObj = mapTocToSidebar(toc, collapsable);
       if (!sidebarObj.sidebar.length) {
         log(
           chalk.yellow(
-            `warning: 该目录 "${toc}" 内部没有任何文件或文件序号出错，将忽略生成对应侧边栏`,
-          ),
-        )
-        return
+            `warning: 该目录 "${toc}" 内部没有任何文件或文件序号出错，将忽略生成对应侧边栏`
+          )
+        );
+        return;
       }
-      sidebarData[`/${path.basename(toc)}/`] = sidebarObj.sidebar
-      sidebarData.catalogue = sidebarObj.catalogueData
+      sidebarData[`/${path.basename(toc)}/`] = sidebarObj.sidebar;
+      sidebarData.catalogue = sidebarObj.catalogueData;
     }
-  })
+  });
 
   writeStream = fs.createWriteStream(
-    '/Users/zhaochengwu/Desktop/sidebarData.json',
-  )
-  writeStream.write(JSON.stringify(sidebarData))
-  writeStream.end()
-  return sidebarData
+    '/Users/zhaochengwu/Desktop/sidebarData.json'
+  );
+  writeStream.write(JSON.stringify(sidebarData));
+  writeStream.end();
+  return sidebarData;
 }
 
-module.exports = createSidebarData
+module.exports = createSidebarData;
 
 /**
  * 读取指定目录下的文件绝对路径
  * @param {String} root 指定的目录
  */
 function readTocs(root) {
-  const result = []
-  const files = fs.readdirSync(root) // 读取目录,返回数组，成员是root底下所有的目录名 (包含文件夹和文件)
+  const result = [];
+  const files = fs.readdirSync(root); // 读取目录,返回数组，成员是root底下所有的目录名 (包含文件夹和文件)
   files.forEach((name) => {
-    const file = path.resolve(root, name) // 将路径或路径片段的序列解析为绝对路径
+    const file = path.resolve(root, name); // 将路径或路径片段的序列解析为绝对路径
     if (
       fs.statSync(file).isDirectory() &&
       name !== '.vuepress' &&
       name !== '@pages'
     ) {
       // 是否为文件夹目录，并排除.vuepress文件夹
-      result.push(file)
+      result.push(file);
     }
-  })
-  return result
+  });
+  return result;
 }
 
 /**
@@ -73,48 +73,48 @@ function readTocs(root) {
  * @param {String} root
  */
 function mapTocToPostSidebar(root) {
-  let postSidebar = [] // 碎片化文章数据
-  const files = fs.readdirSync(root) // 读取目录（文件和文件夹）,返回数组
+  let postSidebar = []; // 碎片化文章数据
+  const files = fs.readdirSync(root); // 读取目录（文件和文件夹）,返回数组
 
   files.forEach((filename) => {
-    const file = path.resolve(root, filename) // 方法：将路径或路径片段的序列解析为绝对路径
-    const stat = fs.statSync(file) // 文件信息
+    const file = path.resolve(root, filename); // 方法：将路径或路径片段的序列解析为绝对路径
+    const stat = fs.statSync(file); // 文件信息
 
-    const fileNameArr = filename.split('.')
+    const fileNameArr = filename.split('.');
     if (fileNameArr.length > 2) {
       log(
         chalk.yellow(
-          `warning: 该文件 "${file}" 在_posts文件夹中，不应有序号，且文件名中间不应有'.'`,
-        ),
-      )
-      return
+          `warning: 该文件 "${file}" 在_posts文件夹中，不应有序号，且文件名中间不应有'.'`
+        )
+      );
+      return;
     }
     if (stat.isDirectory()) {
       // 是文件夹目录
       // log(chalk.yellow(`warning: 该目录 "${file}" 内文件无法生成侧边栏，_posts文件夹里面不能有二级目录。`))
-      return
+      return;
     }
 
-    let [title, type] = filename.split('.')
+    let [title, type] = filename.split('.');
     if (type !== 'md') {
       log(
         chalk.yellow(
-          `warning: 该文件 "${file}" 非.md格式文件，不支持该文件类型`,
-        ),
-      )
-      return
+          `warning: 该文件 "${file}" 非.md格式文件，不支持该文件类型`
+        )
+      );
+      return;
     }
 
-    const contentStr = fs.readFileSync(file, 'utf8') // 读取md文件内容，返回字符串
-    const { data } = matter(contentStr) // 解析出front matter数据
-    const permalink = data.permalink || ''
+    const contentStr = fs.readFileSync(file, 'utf8'); // 读取md文件内容，返回字符串
+    const { data } = matter(contentStr); // 解析出front matter数据
+    const permalink = data.permalink || '';
     if (data.title) {
-      title = data.title
+      title = data.title;
     }
-    postSidebar.push([filename, title, permalink]) // [<路径>, <标题>, <永久链接>]
-  })
+    postSidebar.push([filename, title, permalink]); // [<路径>, <标题>, <永久链接>]
+  });
 
-  return postSidebar
+  return postSidebar;
 }
 
 /**
@@ -125,19 +125,25 @@ function mapTocToPostSidebar(root) {
  */
 
 function mapTocToSidebar(root, collapsable, prefix = '') {
-  let sidebar = [] // 结构化文章侧边栏数据
-  const files = fs.readdirSync(root) // 读取目录（文件和文件夹）,返回数组
-  let fileIndex = 0
+  let sidebar = []; // 结构化文章侧边栏数据
+  const files = fs.readdirSync(root); // 读取目录（文件和文件夹）,返回数组
+  let fileIndex = 0;
 
   files.forEach((filename) => {
-    const file = path.resolve(root, filename) // 方法：将路径或路径片段的序列解析为绝对路径
-    const stat = fs.statSync(file) // 文件信息
+    const file = path.resolve(root, filename); // 方法：将路径或路径片段的序列解析为绝对路径
+    const stat = fs.statSync(file); // 文件信息
     if (filename === '.DS_Store') {
       // 过滤.DS_Store文件
-      return
+      return;
     }
-    let [type, title, order] = filename.split('.').reverse()
-    order = parseInt(order, 10) || fileIndex
+    let order, title, type;
+    let fileInfo = filename.split('.');
+    if (!stat.isDirectory()) {
+      [type, title, order] = fileInfo.reverse();
+    } else {
+      [order, title] = fileInfo;
+    }
+    order = parseInt(order, 10) || fileIndex;
     if (isNaN(order) || order < 0) {
       // log(chalk.yellow(`warning: 该文件 "${file}" 无序号， 排序默认`))
       // return
@@ -146,9 +152,9 @@ function mapTocToSidebar(root, collapsable, prefix = '') {
       // 判断序号是否已经存在
       log(
         chalk.yellow(
-          `warning: 该文件 "${file}" 的序号在同一级别中重复出现，将会被覆盖`,
-        ),
-      )
+          `warning: 该文件 "${file}" 的序号在同一级别中重复出现，将会被覆盖`
+        )
+      );
     }
 
     if (stat.isDirectory()) {
@@ -159,40 +165,40 @@ function mapTocToSidebar(root, collapsable, prefix = '') {
         collapsable, // 是否可折叠，默认true
         children: mapTocToSidebar(file, collapsable, prefix + filename + '/')
           .sidebar, // 子栏路径添加前缀
-      }
+      };
     } else {
       // 是文件
       if (type !== 'md') {
         log(
           chalk.yellow(
-            `warning: 该文件 "${file}" 非.md格式文件，不支持该文件类型`,
-          ),
-        )
-        return
+            `warning: 该文件 "${file}" 非.md格式文件，不支持该文件类型`
+          )
+        );
+        return;
       }
-      const contentStr = fs.readFileSync(file, 'utf8') // 读取md文件内容，返回字符串
-      const { data } = matter(contentStr) // 解析出front matter数据
-      const permalink = data.permalink || ''
+      const contentStr = fs.readFileSync(file, 'utf8'); // 读取md文件内容，返回字符串
+      const { data } = matter(contentStr); // 解析出front matter数据
+      const permalink = data.permalink || '';
 
       // 目录页对应的永久链接，用于给面包屑提供链接
-      const { pageComponent } = data
+      const { pageComponent } = data;
       if (pageComponent && pageComponent.name === 'Catalogue') {
-        catalogueData[title] = permalink
+        catalogueData[title] = permalink;
       }
 
       if (data.title) {
-        title = data.title
+        title = data.title;
       }
-      sidebar[order] = [prefix + filename, title, permalink] // [<路径>, <标题>, <永久链接>]
+      sidebar[order] = [prefix + filename, title, permalink]; // [<路径>, <标题>, <永久链接>]
 
       // 记录生成序列号
-      fileIndex = order + 1
+      fileIndex = order + 1;
     }
-  })
+  });
 
-  sidebar = sidebar.filter((item) => item !== null && item !== undefined)
+  sidebar = sidebar.filter((item) => item !== null && item !== undefined);
   return {
     sidebar,
     catalogueData,
-  }
+  };
 }
