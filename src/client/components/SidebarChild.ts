@@ -4,12 +4,7 @@ import { useRoute } from 'vue-router';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
 import type { ResolvedSidebarItem } from '../../shared';
 import NavLink from './NavLink.vue';
-
-const normalizePath = (path: string): string =>
-  decodeURI(path)
-    .replace(/#.*$/, '')
-    .replace(/(index)?\.(md|html)$/, '')
-    .replace(/^(.*?)\/$/, '$1');
+import { normalizePath } from '../utils';
 
 const isActiveLink = (
   route: RouteLocationNormalizedLoaded,
