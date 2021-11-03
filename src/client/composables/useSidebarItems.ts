@@ -13,6 +13,7 @@ import type {
   ResolvedSidebarItem,
 } from '../../shared';
 import { useNavLink, useThemeLocaleData } from '.';
+import { normalizePath } from '../utils';
 
 export type SidebarItemsRef = ComputedRef<ResolvedSidebarItem[]>;
 
@@ -37,7 +38,9 @@ export const setupSidebarItems = (): void => {
   const themeLocale = useThemeLocaleData();
   const frontmatter = usePageFrontmatter<DefaultThemeNormalPageFrontmatter>();
   const sidebarItems = computed(() =>
-    resolveSidebarItems(frontmatter.value, themeLocale.value)
+    {
+      return resolveSidebarItems(frontmatter.value, themeLocale.value)
+    }
   );
   provide(sidebarItemsSymbol, sidebarItems);
 };
@@ -141,7 +144,7 @@ export const resolveArraySidebarItems = (
 
     // if the sidebar item is current page and children is not set
     // use headers of current page as children
-    if (childItem.link === route.path) {
+    if (normalizePath(childItem.link || '') === normalizePath(route.path)) {
       // skip h1 header
       const headers =
         page.value.headers[0]?.level === 1
@@ -207,6 +210,12 @@ export const resolveLocalePath = (locales, routePath) => {
         } else {
           const reg = new RegExp(`${routePath}?`);
           if (current[2] && reg.test(current[2])) {
+            return localePath;
+          }
+          if (
+            `${localePath}${current[0]}`.replace(/(.*?)\.md/, '$1.html') ===
+            routePath
+          ) {
             return localePath;
           }
         }
