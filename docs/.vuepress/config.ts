@@ -11,6 +11,8 @@ export default {
   base: '/',
   plugins,
   themeConfig,
+  // 站点默认语言
+  lang: 'zh-CN',
 
   /**
    * 获取所有md文件路径，解析出sidebar

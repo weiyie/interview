@@ -78,7 +78,22 @@ export const defaultTheme: Theme<DefaultThemeOptions> = (
       [
         '@vuepress/active-header-links',
         resolveActiveHeaderLinksPluginOptions(themePlugins),
-      ],
+      ],    
+      // [
+      //   '@vuepress/plugin-docsearch',
+      //   {
+      //     apiKey: '3a539aab83105f01761a137c61004d85',
+      //     indexName: 'vuepress',
+      //     searchParameters: {
+      //       facetFilters: ['tags:v2'],
+      //     },
+      //     locales: {
+      //       '/zh/': {
+      //         placeholder: '搜索文档',
+      //       },
+      //     },
+      //   },
+      // ],
       ['@vuepress/back-to-top', themePlugins.backToTop !== false],
       [
         '@vuepress/container',
