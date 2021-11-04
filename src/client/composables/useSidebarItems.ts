@@ -37,11 +37,9 @@ export const useSidebarItems = (): SidebarItemsRef => {
 export const setupSidebarItems = (): void => {
   const themeLocale = useThemeLocaleData();
   const frontmatter = usePageFrontmatter<DefaultThemeNormalPageFrontmatter>();
-  const sidebarItems = computed(() =>
-    {
-      return resolveSidebarItems(frontmatter.value, themeLocale.value)
-    }
-  );
+  const sidebarItems = computed(() => {
+    return resolveSidebarItems(frontmatter.value, themeLocale.value);
+  });
   provide(sidebarItemsSymbol, sidebarItems);
 };
 
@@ -120,7 +118,8 @@ export const resolveAutoSidebarItems = (
  */
 export const resolveArraySidebarItems = (
   sidebarConfig: SidebarConfigArray,
-  sidebarDepth: number
+  sidebarDepth: number,
+  sidebarPath?: string
 ): ResolvedSidebarItem[] => {
   const route = useRoute();
   const page = usePageData();
@@ -144,7 +143,7 @@ export const resolveArraySidebarItems = (
 
     // if the sidebar item is current page and children is not set
     // use headers of current page as children
-    if (normalizePath(childItem.link || '') === normalizePath(route.path)) {
+    if (normalizePath(childItem.link || `${sidebarPath}${(childItem as SidebarItem).text}`) === normalizePath(route.path)) {
       // skip h1 header
       const headers =
         page.value.headers[0]?.level === 1
@@ -172,7 +171,7 @@ export const resolveMultiSidebarItems = (
   const route = useRoute();
   const sidebarPath = resolveLocalePath(sidebarConfig, route.path);
   const matchedSidebarConfig = sidebarConfig[sidebarPath] ?? [];
-  return resolveArraySidebarItems(matchedSidebarConfig, sidebarDepth);
+  return resolveArraySidebarItems(matchedSidebarConfig, sidebarDepth, sidebarPath);
 };
 
 /**
@@ -192,6 +191,7 @@ export const resolveLocalePath = (locales, routePath) => {
     }
   }
 
+  // 遍历localePaths 跟当前routePath进行匹配
   for (const localePath of localePaths) {
     const root = Array.isArray(locales[localePath])
       ? [...locales[localePath]]
@@ -212,9 +212,10 @@ export const resolveLocalePath = (locales, routePath) => {
           if (current[2] && reg.test(current[2])) {
             return localePath;
           }
+          // 为未设置permalink页面进行匹配
           if (
-            `${localePath}${current[0]}`.replace(/(.*?)\.md/, '$1.html') ===
-            routePath
+            normalizePath(`${localePath}${current[0]}`) ===
+            normalizePath(routePath)
           ) {
             return localePath;
           }
