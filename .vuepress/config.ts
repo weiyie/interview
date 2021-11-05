@@ -18,4 +18,10 @@ export default {
    * 获取所有md文件路径，解析出sidebar
    */
   sourceDir,
+
+  // 目录配置
+  dest: `dist`,
+  temp: `.vuepress/.temp`,
+  cache: `.vuepress/.cache`,
+  // public: '/public',
 }
