@@ -26,7 +26,7 @@ if [ -z "$GITHUB_TOKEN" ]; then
   githubUrl=git@github.com:${userName}/${repoName}.git
 else
   msg='来自github actions的自动部署'
-  githubUrl="https://${userName}:${GITHUB_TOKEN}@github.com/${userName}/${repoName}}.git"
+  githubUrl="https://${userName}:${GITHUB_TOKEN}@github.com/${userName}/${repoName}.git"
 fi
 
 git init
