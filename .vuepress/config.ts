@@ -3,9 +3,9 @@ import { plugins, themeConfig } from './configs'
 
 const theme = resolve('src/node/index')
 const sourceDir = resolve('docs')
-const development = process.env.NODE_ENV === 'development'
 const userName="weiyie"
 const repoName='interview'
+const development = process.env.NODE_ENV === 'development'
 
 export default {
   theme, // 使用本地主题
@@ -29,14 +29,22 @@ export default {
   // public: '/public',
 
   bundlerConfig: {
-    configureWebpack: (config, isServer) => {
+    configureWebpack: (config, isServer, isBuild) => {
       // 开发模式不修改默认配置
-      if (development) return;
+      if (!isBuild) return {};
   
-      config.output.publicPath = `https://cdn.jsdelivr.net/gh/${userName}/${repoName}/`
+      const publicPath = `https://cdn.jsdelivr.net/gh/${userName}/${repoName}/`
+      let filename = config.output.filename
       if (!isServer) {
         // 修改客户端打包配置
-        config.output.filename = 'assets/js/[name].[contenthash].js'
+        filename = 'assets/js/[name].[contenthash].js'
+      }
+
+      return {
+        output: {
+          publicPath,
+          filename
+        }
       }
     }
   }
