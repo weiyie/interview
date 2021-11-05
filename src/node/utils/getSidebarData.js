@@ -37,11 +37,6 @@ function createSidebarData(sourceDir, collapsable = false) {
     }
   });
 
-  writeStream = fs.createWriteStream(
-    '/Users/zhaochengwu/Desktop/sidebarData.json'
-  );
-  writeStream.write(JSON.stringify(sidebarData));
-  writeStream.end();
   return sidebarData;
 }
 
