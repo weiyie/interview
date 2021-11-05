@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "vuepress dev docs -c .vuepress/config.ts",
-    "build": "vuepress build docs -c .vuepress/config.ts"
+    "build": "vuepress build docs -c .vuepress/config.ts",
+    "deploy": "bash deploy.sh"
   },
   "author": "weiyie",
   "license": "MIT",
