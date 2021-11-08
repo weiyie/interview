@@ -13,6 +13,8 @@
 <script setup lang="ts">
 import { useRouteLocale } from '@vuepress/client'
 import { useThemeLocaleData } from '../composables'
+import { onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 const routeLocale = useRouteLocale()
 const themeLocale = useThemeLocaleData()
@@ -22,4 +24,9 @@ const getMsg = (): string =>
   messages[Math.floor(Math.random() * messages.length)]
 const homeLink = themeLocale.value.home ?? routeLocale.value
 const homeText = themeLocale.value.backToHome ?? 'Back to home'
+onMounted(() => {
+
+  const route = useRoute()
+  console.log('route: ', route)
+})
 </script>
