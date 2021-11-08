@@ -11,7 +11,7 @@ export default {
   theme, // 使用本地主题
   title: '前端面试',
   description: '前端面试必备指南',
-  base: '/',
+  base: development ? '/' : `/${repoName}/`,
   plugins,
   themeConfig,
   // 站点默认语言
@@ -29,22 +29,17 @@ export default {
   // public: '/public',
 
   bundlerConfig: {
-    configureWebpack: (config, isServer, isBuild) => {
+    chainWebpack: (config, isServer, isBuild) => {
       // 开发模式不修改默认配置
-      if (!isBuild) return {};
-  
-      const publicPath = `https://cdn.jsdelivr.net/gh/${userName}/${repoName}/`
-      let filename = config.output.filename
+      if (!isBuild) return;
+
+      // todo  配置是对的  但是vuepress代码bug导致不支持
+      // https://github.com/vuepress/vuepress-next/blob/f91651c3c7248fdabfa19cb9bdcdba4c28622eec/packages/%40vuepress/bundler-webpack/src/build/renderPageScripts.ts
+      config.output.publicPath = `https://cdn.jsdelivr.net/gh/${userName}/${repoName}/`
+
       if (!isServer) {
         // 修改客户端打包配置
-        filename = 'assets/js/[name].[contenthash].js'
-      }
-
-      return {
-        output: {
-          publicPath,
-          filename
-        }
+        config.output.filename = 'assets/js/[name]OOO.[contenthash].js'
       }
     }
   }
