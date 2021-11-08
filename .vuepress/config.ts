@@ -39,7 +39,7 @@ export default {
 
       if (!isServer) {
         // 修改客户端打包配置
-        config.output.filename = 'assets/js/[name]OOO.[contenthash].js'
+        config.output.filename = 'assets/js/[name].[contenthash: 6].js'
       }
     }
   }
